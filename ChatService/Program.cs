@@ -1,4 +1,5 @@
 using ChatService.Domain;
+using ChatService.Services.Message;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -11,6 +12,7 @@ var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").B
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 
 builder.Services.AddSwaggerGen(swagger =>
 {

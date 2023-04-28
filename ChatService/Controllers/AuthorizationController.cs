@@ -1,4 +1,5 @@
 ﻿using ChatService.Domain.Models;
+using ChatService.Services.Message;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
@@ -10,6 +11,11 @@ namespace AuthenticationService.Controllers
     [Route("[controller]")]
     public class AnonymousChatController : ControllerBase
     {
+        IMessageService messageService;
+        public AnonymousChatController(IMessageService messageService)
+        {
+            this.messageService = messageService;
+        }
 
         // TODO :: написать метод, который будет отправляь
         // в боди content и id_chanel
@@ -20,8 +26,8 @@ namespace AuthenticationService.Controllers
         public IActionResult TestBearer()
         {
             return Ok("Success");
-        } 
-                
+        }
+
         [HttpPost(nameof(GetUserIdOutJwt))]
         [Authorize(Roles = "spd-chat-service")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -32,11 +38,11 @@ namespace AuthenticationService.Controllers
             Request.Headers.TryGetValue("authorization", out value);
             string token = value[0].Replace("Bearer ", "");
             JwtSecurityToken jwt = new JwtSecurityToken(token);
-            var userId = jwt.Claims.FirstOrDefault(x=> x.Type == "user_id").Value;
+            var userId = jwt.Claims.FirstOrDefault(x => x.Type == "user_id").Value;
             return Ok(userId);
         }
 
-//Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMT0NBTCBBVVRIT1JJVFkiOiJNeUF1dGhTZXJ2ZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJ1c2VyX2lkIjoiNjQzMjQ4YzctYmEyMi00MzhmLThkOGItZTY4OTNlZGEwYTEwIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbImFkbWluIiwidXNlciIsInNwZC1jaGF0LXNlcnZpY2UiXSwiZXhwIjoxNjgyNjk1NzYwLCJpc3MiOiJNeUF1dGhTZXJ2ZXIiLCJhdWQiOiJNeUF1dGhDbGllbnQifQ.z-Hgh7LdYIPH4FWpQGHgEtKUO-dFBkmuzGN9v9VJpIY
+        //Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMT0NBTCBBVVRIT1JJVFkiOiJNeUF1dGhTZXJ2ZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJ1c2VyX2lkIjoiNjQzMjQ4YzctYmEyMi00MzhmLThkOGItZTY4OTNlZGEwYTEwIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbImFkbWluIiwidXNlciIsInNwZC1jaGF0LXNlcnZpY2UiXSwiZXhwIjoxNjgyNjk1NzYwLCJpc3MiOiJNeUF1dGhTZXJ2ZXIiLCJhdWQiOiJNeUF1dGhDbGllbnQifQ.z-Hgh7LdYIPH4FWpQGHgEtKUO-dFBkmuzGN9v9VJpIY
 
         // TODO :: получаем сообщение, получаем клиентский id, отправляем по chanelId сообщение в БД
         // клиент должен получить оповещение о новом сообщении
@@ -46,6 +52,7 @@ namespace AuthenticationService.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult SendMessage(MessageModel message)
         {
+            messageService.Send(message);
             StringValues value;
             Request.Headers.TryGetValue("authorization", out value);
             string token = value[0].Replace("Bearer ", "");
@@ -53,6 +60,5 @@ namespace AuthenticationService.Controllers
             var userId = jwt.Claims.FirstOrDefault(x => x.Type == "user_id").Value;
             return Ok(userId);
         }
-
     }
 }
