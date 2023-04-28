@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 
 namespace AuthenticationService.Controllers
 {
@@ -26,7 +27,11 @@ namespace AuthenticationService.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult TestServiceAuth()
         {
-            return Ok("Success");
+            StringValues value;
+            StringValues userId;
+            Request.Headers.TryGetValue("authorization", out value);
+            // TODO :: получить id авторизованного юзера из токена
+            return Ok(value);
         }
     }
 }
