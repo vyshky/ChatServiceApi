@@ -6,6 +6,7 @@ namespace ChatService.Domain
     public class ApplicationDbContext : DbContext
     {
         public DbSet<MessageEntity> Message { get; set; }
+        public DbSet<GroupEntity> Group { get; set; }
         public DbSet<UserLastSeenEntity> UserLastSeen { get; set; }
 
 

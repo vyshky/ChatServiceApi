@@ -2,14 +2,14 @@
 {
     public class UserLastSeenEntity
     {
-        public Guid id { get; set; }
-        public Guid user_id { get; set; }
-        public Guid chanel_id { get; set; }
-        public DateTime dateTime { get; set; }
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+        public Guid ChanelId { get; set; }
+        public DateTime DateTime { get; set; }
 
         public UserLastSeenEntity()
         {
-            id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
     }
 }
