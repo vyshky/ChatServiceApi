@@ -10,6 +10,21 @@ var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").B
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("https://spdfront.bsite.net")                                
+                                .WithHeaders("content-type", "authorization");
+                          policy.AllowAnyMethod();
+                          //policy.AllowCredentials();
+                      });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddScoped<IMessageService, MessageService>();
@@ -68,9 +83,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 var app = builder.Build();
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 //}
+
+app.UseCors(MyAllowSpecificOrigins);
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
