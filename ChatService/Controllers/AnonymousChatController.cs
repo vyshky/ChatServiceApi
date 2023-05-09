@@ -4,7 +4,6 @@ using ChatService.Services.Message;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace AuthenticationService.Controllers
@@ -32,7 +31,8 @@ namespace AuthenticationService.Controllers
             string token = value[0].Replace("Bearer ", "");
             JwtSecurityToken jwt = new JwtSecurityToken(token);
             string myClientId = jwt.Claims.FirstOrDefault(x => x.Type == "user_id").Value;
-            messageService.SendMessage(Guid.Parse(myClientId), message);
+            string senderMyName = jwt.Claims.FirstOrDefault(x => x.Type == "tag_name").Value;
+            messageService.SendMessage(Guid.Parse(myClientId), senderMyName, message);
             return Ok("Сообщение доставленно");
         }
 
@@ -45,8 +45,9 @@ namespace AuthenticationService.Controllers
             Request.Headers.TryGetValue("authorization", out value);
             string token = value[0].Replace("Bearer ", "");
             JwtSecurityToken jwt = new JwtSecurityToken(token);
-            string myClientId = jwt.Claims.FirstOrDefault(x => x.Type == "user_id").Value;
-            List<MessageEntity> result = messageService.FindMessagesByChanelId(Guid.Parse(myClientId));
+            //string myClientId = jwt.Claims.FirstOrDefault(x => x.Type == "user_id").Value;
+            string tagName = jwt.Claims.FirstOrDefault(x => x.Type == "tag_name").Value;
+            List<MessageEntity> result = messageService.FindMessagesByTagName(tagName);
             return Ok(new { Messages = result });
         }
 
