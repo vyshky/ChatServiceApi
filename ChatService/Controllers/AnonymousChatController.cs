@@ -36,7 +36,7 @@ namespace AuthenticationService.Controllers
             return Ok("Сообщение доставленно");
         }
 
-        [HttpPost(nameof(GetMessages))]
+        [HttpGet(nameof(GetMessages))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetMessages()

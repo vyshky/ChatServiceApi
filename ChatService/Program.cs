@@ -18,9 +18,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("https://spdfront.bsite.net")                                
-                                .WithHeaders("content-type", "authorization");
+                          //policy.WithOrigins("https://spdfront.bsite.net")
+                          //      .WithHeaders("content-type", "authorization");
                           policy.AllowAnyMethod();
+                          policy.AllowAnyOrigin();
+                          policy.AllowAnyHeader();
                           //policy.AllowCredentials();
                       });
 });
